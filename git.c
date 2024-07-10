@@ -6,25 +6,30 @@ def read_numbers(file_path):
     except ValueError:
         print("Error: File contains non-integer values.")
         return []
+    except FileNotFoundError:
+        print(f"Error: File not found - {file_path}")
+        return []
+    except IOError:
+        print(f"Error: An IOError occurred while reading the file - {file_path}")
+        return []
 
 def calculate_sum(numbers):
-    total = 0
-    for number in numbers:
-        total += number
-    return total
+    return sum(numbers)
 
 def calculate_average(numbers):
     if len(numbers) == 0:
         print("Error: Cannot calculate average of an empty list.")
         return None
-    total = calculate_sum(numbers)
-    return total / len(numbers)
+    return calculate_sum(numbers) / len(numbers)
 
 def write_results(file_path, total, average):
-    with open(file_path, 'w') as file:
-        file.write(f"Sum: {total}\n")
-        if average is not None:
-            file.write(f"Average: {average}\n")
+    try:
+        with open(file_path, 'w') as file:
+            file.write(f"Sum: {total}\n")
+            if average is not None:
+                file.write(f"Average: {average}\n")
+    except IOError:
+        print(f"Error: An IOError occurred while writing to the file - {file_path}")
 
 def main():
     input_file = input("Enter the input file path: ")
@@ -34,8 +39,9 @@ def main():
     if numbers:
         total = calculate_sum(numbers)
         average = calculate_average(numbers)
-
         write_results(output_file, total, average)
+    else:
+        print("No numbers to process.")
 
 if __name__ == "__main__":
     main()
